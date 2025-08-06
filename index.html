@@ -170,11 +170,9 @@
   <script>
     const cake = document.getElementById("cake");
 
-    // Camadas que devem cair de cima para baixo (sem incluir a vela)
+    // As 5 camadas que vão cair (a vela já está no topo fixada)
     const layers = [
       { class: "icing" },
-      { class: "cake" },
-      { class: "filling" },
       { class: "cake" },
       { class: "filling" },
       { class: "cake" },
@@ -195,7 +193,8 @@
 
       layer.style.opacity = 0;
       layer.style.transform = "translateY(-100px)";
-      cake.appendChild(layer);
+      // Insere as camadas acima do prato, abaixo da vela
+      cake.insertBefore(layer, cake.children[cake.children.length - 1]);
 
       requestAnimationFrame(() => {
         layer.style.opacity = 1;
@@ -243,4 +242,5 @@
 
 </body>
 </html>
+
 
