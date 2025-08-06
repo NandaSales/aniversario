@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Birthday Cake</title>
+  <title>Animeversary Cake</title>
   <style>
     body {
       margin: 0;
@@ -18,16 +18,16 @@
       top: 40%;
       transform: translate(-50%, -50%);
       display: flex;
-      flex-direction: column;
+      flex-direction: column-reverse; /* Inverte visualmente: base embaixo */
       align-items: center;
       z-index: 1;
     }
 
     .layer {
-      width: 120px;
-      height: 20px;
-      border-radius: 8px;
-      margin: 2px 0;
+      width: 100px; /* mais fino */
+      height: 16px; /* mais baixo */
+      border-radius: 6px;
+      margin: 1px 0;
       opacity: 0;
       position: relative;
       transform: translateY(-100px);
@@ -35,19 +35,38 @@
     }
 
     .plate { background: white; }
+
     .cake { background: #d2691e; }
-    .filling { background: #4b2e2e; }
+
+    .filling {
+      background: #4b2e2e;
+      position: relative;
+    }
+
+    /* efeito de derretido */
+    .filling::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: #4b2e2e;
+      border-radius: 50%;
+      filter: blur(1px);
+    }
+
     .icing { background: #fff5cc; }
 
     .candle {
-      width: 8px;
-      height: 30px;
+      width: 6px;
+      height: 24px;
       background: repeating-linear-gradient(
         to top,
         black,
-        black 4px,
-        purple 4px,
-        purple 8px
+        black 3px,
+        purple 3px,
+        purple 6px
       );
       position: relative;
       border-radius: 2px;
@@ -96,7 +115,7 @@
       width: 30px;
       height: 40px;
       background: red;
-      border-radius: 50% 50% 50% 50%;
+      border-radius: 50%;
       position: absolute;
       animation: rise 5s linear infinite;
     }
@@ -144,28 +163,27 @@
   <div id="cake"></div>
 
   <div class="text">
-    <div id="congrats">Happy Birthday!</div>
-    <div id="name">João</div> <!-- Você pode alterar o nome aqui -->
+    <div id="congrats">Happy Animeversary!</div>
+    <div id="name">João</div>
   </div>
 
   <script>
     const cake = document.getElementById("cake");
 
-    // Camadas do bolo
+    // Camadas invertidas: de cima (vela) para baixo (prato)
     const layers = [
-      { class: "plate" },
-      { class: "cake" },
-      { class: "filling" },
-      { class: "cake" },
-      { class: "filling" },
-      { class: "cake" },
+      { class: "candle" },
       { class: "icing" },
-      { class: "candle" }
+      { class: "cake" },
+      { class: "filling" },
+      { class: "cake" },
+      { class: "filling" },
+      { class: "cake" },
+      { class: "plate" }
     ];
 
     let i = 0;
 
-    // Adiciona as camadas com efeito de queda
     function dropLayer() {
       if (i >= layers.length) {
         showFlame();
@@ -184,12 +202,10 @@
         layer.appendChild(flame);
       }
 
-      // Estado inicial
       layer.style.opacity = 0;
       layer.style.transform = "translateY(-100px)";
       cake.appendChild(layer);
 
-      // Força reflow e aplica transição
       requestAnimationFrame(() => {
         layer.style.opacity = 1;
         layer.style.transform = "translateY(0)";
@@ -230,7 +246,6 @@
       setTimeout(() => star.remove(), 1000);
     });
 
-    // Inicia a montagem do bolo
     dropLayer();
   </script>
 

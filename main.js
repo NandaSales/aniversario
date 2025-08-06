@@ -1,16 +1,16 @@
 // Seleciona o elemento do bolo
 const cake = document.getElementById("cake");
 
-// Definição das camadas do bolo, em ordem
+// Camadas invertidas: de cima para baixo (vela no topo, prato no final)
 const layers = [
-  { class: "plate" },
-  { class: "cake" },
-  { class: "filling" },
-  { class: "cake" },
-  { class: "filling" },
-  { class: "cake" },
+  { class: "candle" },
   { class: "icing" },
-  { class: "candle" }
+  { class: "cake" },
+  { class: "filling" },
+  { class: "cake" },
+  { class: "filling" },
+  { class: "cake" },
+  { class: "plate" }
 ];
 
 let i = 0;
@@ -35,18 +35,21 @@ function dropLayer() {
     layer.appendChild(flame);
   }
 
+  // Adiciona ao bolo
   cake.appendChild(layer);
 
-  // Animação de queda
+  // Define estado inicial
   layer.style.opacity = 0;
   layer.style.transform = "translateY(-100px)";
-  setTimeout(() => {
+
+  // Força reflow para ativar transição
+  requestAnimationFrame(() => {
     layer.style.opacity = 1;
     layer.style.transform = "translateY(0)";
-  }, 10);
+  });
 
   i++;
-  setTimeout(dropLayer, 500); // Próxima camada após 500ms
+  setTimeout(dropLayer, 500); // próxima camada após 500ms
 }
 
 // Exibe a chama da vela
@@ -89,5 +92,5 @@ document.addEventListener("click", (e) => {
   setTimeout(() => star.remove(), 1000);
 });
 
-// Inicia a animação do bolo
-dropLayer();
+// Inicia a animação do bolo quando a página carregar
+document.addEventListener("DOMContentLoaded", dropLayer);
