@@ -2,245 +2,174 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Happy Animeversary!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Animeversary</title>
   <style>
     body {
       margin: 0;
-      background-color: #dab6fc;
-      font-family: sans-serif;
+      background: #f8a9c4;
+      font-family: 'Segoe UI', sans-serif;
       overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
     }
 
     #cake {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
+      position: relative;
       display: flex;
-      flex-direction: column;
+      flex-direction: column-reverse;
       align-items: center;
-      z-index: 1;
+      margin-bottom: 40px;
     }
 
     .layer {
-      width: 100px;
-      height: 16px;
-      border-radius: 6px;
+      width: 120px;
+      height: 18px;
+      border-radius: 8px;
       margin: 2px 0;
       opacity: 0;
-      position: relative;
-      transform: translateY(-100px);
-      transition: all 0.5s ease;
+      transform: translateY(-200px);
+      animation: drop 0.6s ease forwards;
     }
 
-    .plate { background: white; }
-    .cake { background: #d2691e; }
+    .plate {
+      background: #ffffff;
+      width: 140px;
+      height: 10px;
+      border-radius: 5px;
+    }
+
+    .cake {
+      background: #d2691e;
+    }
+
     .filling {
       background: #4b2e2e;
       position: relative;
     }
+
     .filling::after {
-      content: "";
+      content: '';
       position: absolute;
-      bottom: -4px;
+      bottom: -5px;
       left: 0;
       width: 100%;
-      height: 6px;
+      height: 8px;
       background: #4b2e2e;
       border-radius: 50%;
       filter: blur(1px);
     }
 
-    .icing { background: #fff5cc; }
+    .icing {
+      background: #fff5cc;
+    }
 
     .candle {
-      width: 6px;
-      height: 24px;
+      width: 8px;
+      height: 30px;
       background: repeating-linear-gradient(
         to top,
-        black,
-        black 3px,
-        purple 3px,
-        purple 6px
+        #000,
+        #000 3px,
+        #800080 3px,
+        #800080 6px
       );
       position: relative;
       border-radius: 2px;
-      margin-bottom: 5px;
+      margin-top: 6px;
     }
 
     .flame {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       background: orange;
       border-radius: 50%;
       position: absolute;
-      top: -10px;
-      left: 0;
+      top: -12px;
+      left: -1px;
       animation: flicker 0.2s infinite;
+    }
+
+    @keyframes drop {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @keyframes flicker {
       0% { transform: scale(1); }
-      50% { transform: scale(1.2); }
+      50% { transform: scale(1.3); }
       100% { transform: scale(1); }
     }
 
     .text {
-      position: absolute;
-      top: 80%;
-      left: 50%;
-      transform: translateX(-50%);
       text-align: center;
-      z-index: 2;
+      color: #fff;
     }
 
-    #congrats {
+    .text h1 {
       font-size: 28px;
-      font-weight: bold;
-      color: white;
+      margin: 0;
     }
 
-    #name {
+    .text p {
       font-size: 16px;
-      color: white;
-    }
-
-    .balloon {
-      width: 30px;
-      height: 40px;
-      background: red;
-      border-radius: 50%;
-      position: absolute;
-      animation: rise 5s linear infinite;
-    }
-
-    .balloon::after {
-      content: "";
-      position: absolute;
-      bottom: -15px;
-      left: 50%;
-      width: 2px;
-      height: 15px;
-      background: #555;
-      transform: translateX(-50%);
-    }
-
-    @keyframes rise {
-      0% {
-        transform: translateY(100vh) scale(1);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(-120vh) scale(1.2);
-        opacity: 0;
-      }
-    }
-
-    .star {
-      width: 5px;
-      height: 5px;
-      background: yellow;
-      border-radius: 50%;
-      position: absolute;
-      pointer-events: none;
-      animation: fadeOut 1s forwards;
-    }
-
-    @keyframes fadeOut {
-      0% { opacity: 1; }
-      100% { opacity: 0; transform: scale(2); }
+      margin: 5px 0 0;
     }
   </style>
 </head>
 <body>
 
-  <div id="cake">
-    <!-- Vela já visível no topo -->
-    <div class="layer candle">
-      <div class="flame" id="flame"></div>
-    </div>
-  </div>
+  <div id="cake"></div>
 
   <div class="text">
-    <div id="congrats">Happy Animeversary!</div>
-    <div id="name">João</div>
+    <h1>Happy Animeversary!</h1>
+    <p>from Lovie</p>
   </div>
 
   <script>
     const cake = document.getElementById("cake");
 
-    // As 5 camadas que vão cair (a vela já está no topo fixada)
+    // Ordem: de baixo pra cima (o container é column-reverse)
     const layers = [
-      { class: "icing" },
+      { class: "plate" },
       { class: "cake" },
       { class: "filling" },
       { class: "cake" },
-      { class: "plate" }
+      { class: "icing" },
+      { class: "candle" }
     ];
 
     let i = 0;
 
     function dropLayer() {
-      if (i >= layers.length) {
-        startBalloons();
-        return;
-      }
+      if (i >= layers.length) return;
 
       const layerData = layers[i];
       const layer = document.createElement("div");
       layer.classList.add("layer", layerData.class);
 
-      layer.style.opacity = 0;
-      layer.style.transform = "translateY(-100px)";
-      // Insere as camadas acima do prato, abaixo da vela
-      cake.insertBefore(layer, cake.children[cake.children.length - 1]);
+      // Se for vela, adiciona chama
+      if (layerData.class === "candle") {
+        const flame = document.createElement("div");
+        flame.classList.add("flame");
+        layer.appendChild(flame);
+      }
 
-      requestAnimationFrame(() => {
-        layer.style.opacity = 1;
-        layer.style.transform = "translateY(0)";
-      });
+      cake.appendChild(layer);
 
+      // Delay para próxima camada
       i++;
       setTimeout(dropLayer, 500);
     }
 
-    // Balões subindo
-    function startBalloons() {
-      setInterval(() => {
-        const balloon = document.createElement("div");
-        balloon.classList.add("balloon");
-        balloon.style.left = `${Math.random() * window.innerWidth}px`;
-        balloon.style.background = getRandomColor();
-        document.body.appendChild(balloon);
-
-        setTimeout(() => balloon.remove(), 5000);
-      }, 300);
-    }
-
-    function getRandomColor() {
-      const colors = ["red", "blue", "green", "yellow", "orange", "pink", "purple"];
-      return colors[Math.floor(Math.random() * colors.length)];
-    }
-
-    // Estrelinhas ao clicar
-    document.addEventListener("click", (e) => {
-      const star = document.createElement("div");
-      star.classList.add("star");
-      star.style.left = `${e.clientX}px`;
-      star.style.top = `${e.clientY}px`;
-      document.body.appendChild(star);
-
-      setTimeout(() => star.remove(), 1000);
-    });
-
-    // Inicia montagem
-    document.addEventListener("DOMContentLoaded", () => {
-      dropLayer();
-    });
+    document.addEventListener("DOMContentLoaded", dropLayer);
   </script>
 
 </body>
 </html>
-
 
