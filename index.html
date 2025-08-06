@@ -7,7 +7,7 @@
   <style>
     body {
       margin: 0;
-      background: #f8a9c4;
+      background: #2c003e; /* Fundo roxo escuro */
       font-family: 'Segoe UI', sans-serif;
       overflow: hidden;
       display: flex;
@@ -23,6 +23,7 @@
       flex-direction: column-reverse;
       align-items: center;
       margin-bottom: 40px;
+      z-index: 2;
     }
 
     .layer {
@@ -109,6 +110,7 @@
     .text {
       text-align: center;
       color: #fff;
+      z-index: 2;
     }
 
     .text h1 {
@@ -119,6 +121,40 @@
     .text p {
       font-size: 16px;
       margin: 5px 0 0;
+    }
+
+    /* 🎈 Balões */
+    .balloon {
+      width: 30px;
+      height: 40px;
+      background: red;
+      border-radius: 50%;
+      position: absolute;
+      bottom: -50px;
+      animation: rise 5s linear;
+      z-index: 1;
+    }
+
+    .balloon::after {
+      content: "";
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      width: 2px;
+      height: 15px;
+      background: #555;
+      transform: translateX(-50%);
+    }
+
+    @keyframes rise {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-120vh) scale(1.2);
+        opacity: 0;
+      }
     }
   </style>
 </head>
@@ -147,7 +183,10 @@
     let i = 0;
 
     function dropLayer() {
-      if (i >= layers.length) return;
+      if (i >= layers.length) {
+        startBalloons(); // Inicia os balões depois do bolo montado
+        return;
+      }
 
       const layerData = layers[i];
       const layer = document.createElement("div");
@@ -162,14 +201,30 @@
 
       cake.appendChild(layer);
 
-      // Delay para próxima camada
       i++;
       setTimeout(dropLayer, 500);
     }
 
+    function startBalloons() {
+      setInterval(() => {
+        const balloon = document.createElement("div");
+        balloon.classList.add("balloon");
+        balloon.style.left = `${Math.random() * window.innerWidth}px`;
+        balloon.style.background = getRandomColor();
+        document.body.appendChild(balloon);
+
+        setTimeout(() => balloon.remove(), 5000);
+      }, 300);
+    }
+
+    function getRandomColor() {
+      const colors = ["red", "blue", "green", "yellow", "orange", "pink", "purple"];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    // Inicia montagem
     document.addEventListener("DOMContentLoaded", dropLayer);
   </script>
 
 </body>
 </html>
-
