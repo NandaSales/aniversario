@@ -11,71 +11,87 @@
       font-family: sans-serif;
       overflow: hidden;
     }
+
     #cake {
       position: absolute;
       left: 50%;
-      top: 50%;
+      top: 40%;
       transform: translate(-50%, -50%);
       display: flex;
       flex-direction: column;
       align-items: center;
       z-index: 1;
     }
+
     .layer {
-      width: 200px;
-      height: 30px;
-      border-radius: 10px;
+      width: 120px;
+      height: 20px;
+      border-radius: 8px;
       margin: 2px 0;
       opacity: 0;
       position: relative;
+      transform: translateY(-100px);
+      transition: all 0.5s ease;
     }
+
     .plate { background: white; }
-    .cake { background: #d2691e; } /* Marrom claro */
-    .filling { background: #4b2e2e; } /* Marrom escuro */
-    .icing { background: #fff5cc; } /* Cobertura branco amarelado */
+    .cake { background: #d2691e; }
+    .filling { background: #4b2e2e; }
+    .icing { background: #fff5cc; }
+
     .candle {
-      width: 10px;
-      height: 40px;
+      width: 8px;
+      height: 30px;
       background: repeating-linear-gradient(
         to top,
         black,
-        black 5px,
-        purple 5px,
-        purple 10px
+        black 4px,
+        purple 4px,
+        purple 8px
       );
       position: relative;
       border-radius: 2px;
       margin-top: -10px;
     }
+
     .flame {
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       background: orange;
       border-radius: 50%;
       position: absolute;
-      top: -12px;
+      top: -10px;
       left: 0;
       animation: flicker 0.2s infinite;
       display: none;
     }
+
     @keyframes flicker {
       0% { transform: scale(1); }
       50% { transform: scale(1.2); }
       100% { transform: scale(1); }
     }
+
     .text {
+      position: absolute;
+      top: 60%;
+      left: 50%;
+      transform: translateX(-50%);
       text-align: center;
-      margin-top: 20px;
+      z-index: 2;
     }
+
     #congrats {
-      font-size: 32px;
+      font-size: 28px;
       font-weight: bold;
       color: white;
     }
+
     #name {
       font-size: 16px;
       color: white;
     }
+
     .balloon {
       width: 30px;
       height: 40px;
@@ -84,6 +100,18 @@
       position: absolute;
       animation: rise 5s linear infinite;
     }
+
+    .balloon::after {
+      content: "";
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      width: 2px;
+      height: 15px;
+      background: #555;
+      transform: translateX(-50%);
+    }
+
     @keyframes rise {
       0% {
         transform: translateY(100vh) scale(1);
@@ -94,6 +122,7 @@
         opacity: 0;
       }
     }
+
     .star {
       width: 5px;
       height: 5px;
@@ -103,6 +132,7 @@
       pointer-events: none;
       animation: fadeOut 1s forwards;
     }
+
     @keyframes fadeOut {
       0% { opacity: 1; }
       100% { opacity: 0; transform: scale(2); }
@@ -110,12 +140,99 @@
   </style>
 </head>
 <body>
+
   <div id="cake"></div>
+
   <div class="text">
     <div id="congrats">Happy Birthday!</div>
-    <div id="name">[Name Here]</div>
+    <div id="name">João</div> <!-- Você pode alterar o nome aqui -->
   </div>
 
-  <script src="main.js"></script>
+  <script>
+    const cake = document.getElementById("cake");
+
+    // Camadas do bolo
+    const layers = [
+      { class: "plate" },
+      { class: "cake" },
+      { class: "filling" },
+      { class: "cake" },
+      { class: "filling" },
+      { class: "cake" },
+      { class: "icing" },
+      { class: "candle" }
+    ];
+
+    let i = 0;
+
+    // Adiciona as camadas com efeito de queda
+    function dropLayer() {
+      if (i >= layers.length) {
+        showFlame();
+        startBalloons();
+        return;
+      }
+
+      const layerData = layers[i];
+      const layer = document.createElement("div");
+      layer.classList.add("layer", layerData.class);
+
+      if (layerData.class === "candle") {
+        const flame = document.createElement("div");
+        flame.classList.add("flame");
+        flame.id = "flame";
+        layer.appendChild(flame);
+      }
+
+      // Estado inicial
+      layer.style.opacity = 0;
+      layer.style.transform = "translateY(-100px)";
+      cake.appendChild(layer);
+
+      // Força reflow e aplica transição
+      requestAnimationFrame(() => {
+        layer.style.opacity = 1;
+        layer.style.transform = "translateY(0)";
+      });
+
+      i++;
+      setTimeout(dropLayer, 500);
+    }
+
+    function showFlame() {
+      const flame = document.getElementById("flame");
+      if (flame) flame.style.display = "block";
+    }
+
+    function startBalloons() {
+      setInterval(() => {
+        const balloon = document.createElement("div");
+        balloon.classList.add("balloon");
+        balloon.style.left = `${Math.random() * window.innerWidth}px`;
+        balloon.style.background = getRandomColor();
+        document.body.appendChild(balloon);
+
+        setTimeout(() => balloon.remove(), 5000);
+      }, 300);
+    }
+
+    function getRandomColor() {
+      const colors = ["red", "blue", "green", "yellow", "orange", "pink", "purple"];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    document.addEventListener("click", (e) => {
+      const star = document.createElement("div");
+      star.classList.add("star");
+      star.style.left = `${e.clientX}px`;
+      star.style.top = `${e.clientY}px`;
+      document.body.appendChild(star);
+      setTimeout(() => star.remove(), 1000);
+    });
+
+    // Inicia a montagem do bolo
+    dropLayer();
+  </script>
+
 </body>
 </html>
