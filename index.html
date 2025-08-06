@@ -68,16 +68,11 @@
       background: #fff5cc;
     }
 
+    /* Vela toda roxa */
     .candle {
       width: 8px;
       height: 30px;
-      background: repeating-linear-gradient(
-        to top,
-        #000,
-        #000 3px,
-        #800080 3px,
-        #800080 6px
-      );
+      background: purple;  /* toda roxa */
       position: relative;
       border-radius: 2px;
       margin-top: 6px;
@@ -111,6 +106,8 @@
       text-align: center;
       color: #fff;
       z-index: 2;
+      max-width: 300px;
+      user-select: none;
     }
 
     .text h1 {
@@ -121,6 +118,14 @@
     .text p {
       font-size: 16px;
       margin: 5px 0 0;
+    }
+
+    .text .message {
+      margin-top: 10px;
+      font-size: 14px;
+      font-style: italic;
+      color: #d9b3ff;
+      min-height: 40px;
     }
 
     /* 🎈 Balões */
@@ -164,13 +169,14 @@
 
   <div class="text">
     <h1>Happy Animeversary!</h1>
-    <p>from Lovie</p>
+    <p id="name">from Lovie</p>
+    <p class="message" id="message">Wishing you a day filled with love and joy!</p>
   </div>
 
   <script>
     const cake = document.getElementById("cake");
 
-    // Ordem: de baixo pra cima (o container é column-reverse)
+    // Ordem: de baixo pra cima (container é column-reverse)
     const layers = [
       { class: "plate" },
       { class: "cake" },
@@ -184,7 +190,7 @@
 
     function dropLayer() {
       if (i >= layers.length) {
-        startBalloons(); // Inicia os balões depois do bolo montado
+        startBalloons(); // Inicia balões após bolo montado
         return;
       }
 
@@ -192,7 +198,6 @@
       const layer = document.createElement("div");
       layer.classList.add("layer", layerData.class);
 
-      // Se for vela, adiciona chama
       if (layerData.class === "candle") {
         const flame = document.createElement("div");
         flame.classList.add("flame");
@@ -222,9 +227,9 @@
       return colors[Math.floor(Math.random() * colors.length)];
     }
 
-    // Inicia montagem
     document.addEventListener("DOMContentLoaded", dropLayer);
   </script>
 
 </body>
 </html>
+
